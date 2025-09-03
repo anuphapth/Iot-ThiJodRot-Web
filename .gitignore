@@ -1,0 +1,19 @@
+# โฟลเดอร์ node_modules (จำเป็นต้อง ignore เพราะไฟล์เยอะมาก)
+node_modules/
+
+# ไฟล์ environment variables เก็บข้อมูลลับ
+.env
+
+# ไฟล์ log ต่างๆ
+*.log
+
+# โฟลเดอร์ build หรือ dist (ถ้ามี)
+dist/
+build/
+
+# โฟลเดอร์ของ editor ที่มักจะสร้างไว้
+.vscode/
+.idea/
+
+# ไฟล์ระบบของ macOS
+.DS_Store
