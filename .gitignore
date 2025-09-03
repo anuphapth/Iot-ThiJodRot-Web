@@ -17,3 +17,7 @@ build/
 
 # ไฟล์ระบบของ macOS
 .DS_Store
+
+.gitgnore
+
+Iot_ThiJodRod
