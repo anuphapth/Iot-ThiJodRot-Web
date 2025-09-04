@@ -41,6 +41,7 @@ export const parking = async (req, res) => {
         }
         return res.status(400).json({ message: "Status not 0 or 1" })
     } catch (err) {
+        console.log(err)
         return res.status(500).json({ err: "Internal Server Error" });
     }
 };
