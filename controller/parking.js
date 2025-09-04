@@ -17,7 +17,7 @@ export const parking = async (req, res) => {
         }
 
         if (status === 1) {
-            const [existing] = await db.query(constants.checkExit, [slot]);
+            const { rows: existing } = await db.query(constants.checkExit, [slot]);
 
             // check car exit?
             if (existing.length > 0) {
@@ -29,38 +29,40 @@ export const parking = async (req, res) => {
             return res.status(201).json({ message: "Get car come on slot " + slot });
         } else if (status === 0) {
             // car go away
-            const [result] = await db.query(constants.carAway, [new Date(), slot]);
+            const result = await db.query(constants.carAway, [new Date(), slot]);
 
-            // car not exit befor
-            if (result.affectedRows === 0) {
+            if (result.rowCount === 0) {
                 return res.status(404).json({ message: "There are no cars parked here" });
             }
+
             await notifyClients();
             return res.status(200).json({ message: "Get car out on slot " + slot });
 
         }
         return res.status(400).json({ message: "Status not 0 or 1" })
     } catch (err) {
+        console.log(err)
         return res.status(500).json({ err: "Internal Server Error" });
     }
 };
 
 // get all log
 export const parkLog = async (req, res) => {
-    const [rows] = await db.query(constants.getAllLog);
+    const { rows } = await db.query(constants.getAllLog);
     return res.status(200).json(rows);
 };
 
 // get last status
 export const getParkingStatus = async (req, res) => {
     try {
-        const [rows] = await db.query(constants.getStatus);
-
+        const { rows } = await db.query(constants.getStatus);
         return res.status(200).json(rows);
-    } catch (err) {
-        return res.status(500).json({ err: "Internal Server Error" });
+    } catch (error) {
+        console.error("Error getParkingStatus:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
 
 let clients = [];
 export const subscribeParkingStatus = (req, res) => {
@@ -76,7 +78,7 @@ export const subscribeParkingStatus = (req, res) => {
 };
 
 export const notifyClients = async () => {
-    const [rows] = await db.query(constants.clien);
+    const { rows } = await db.query(constants.clien);
 
     const data = JSON.stringify(rows);
     // sent data cliients still in browser
