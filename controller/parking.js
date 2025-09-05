@@ -1,5 +1,6 @@
 import constants from '../lib/constants.js';
 import db from '../lib/db.js';
+import { notifyClients } from './sse.js';
 
 // Push Data
 export const parking = async (req, res) => {
@@ -17,7 +18,14 @@ export const parking = async (req, res) => {
         }
 
         if (status === 1) {
-            const { rows: existing } = await db.query(constants.checkExit, [slot]);
+
+            // ซ่อมบำรุง
+            const fixable = await db.query(constants.getStatusCar, [slot]);
+            if (fixable.rows[0].status === 2) {
+                return res.status(200).json({ message: "ซ่อมบำรุง" });
+            }
+
+            const { rows: existing } = await db.query(constants.checkExit, [slot, status]);
 
             // check car exit?
             if (existing.length > 0) {
@@ -25,24 +33,31 @@ export const parking = async (req, res) => {
             }
 
             await db.query(constants.newCar, [slot, new Date()]);
+            await db.query(constants.changStatus, [status, slot]);
             await notifyClients();
             return res.status(201).json({ message: "Get car come on slot " + slot });
         } else if (status === 0) {
-            // car go away
-            const result = await db.query(constants.carAway, [new Date(), slot]);
 
-            if (result.rowCount === 0) {
-                return res.status(404).json({ message: "There are no cars parked here" });
+            const fixable = await db.query(constants.getStatusCar, [slot]);
+            if (fixable.rows[0].status === 2) {
+                return res.status(200).json({ message: "ซ่อมบำรุง" });
             }
 
+            // car go away
+            const { rows: existing } = await db.query(constants.checkExit, [slot, status]);
+
+            if (existing.length > 0) {
+                return res.status(409).json({ message: `There are no cars parked here slot ${slot}` });
+            }
+
+            await db.query(constants.carAway, [new Date(), slot]);
+            await db.query(constants.changStatus, [status, slot]);
             await notifyClients();
             return res.status(200).json({ message: "Get car out on slot " + slot });
-
         }
         return res.status(400).json({ message: "Status not 0 or 1" })
-    } catch (err) {
-        console.log(err)
-        return res.status(500).json({ err: "Internal Server Error" });
+    } catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 };
 
@@ -58,29 +73,6 @@ export const getParkingStatus = async (req, res) => {
         const { rows } = await db.query(constants.getStatus);
         return res.status(200).json(rows);
     } catch (error) {
-        console.error("Error getParkingStatus:", error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
-};
-
-
-let clients = [];
-export const subscribeParkingStatus = (req, res) => {
-    // set Header SSE Make browser long-lived HTTP connection and flush sure to res now 
-    res.set({ 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive', });
-    res.flushHeaders();
-
-    // push all clients still in browser
-    clients.push(res);
-
-    // pop clints out when they left
-    req.on('close', () => { clients = clients.filter(client => client !== res); });
-};
-
-export const notifyClients = async () => {
-    const { rows } = await db.query(constants.clien);
-
-    const data = JSON.stringify(rows);
-    // sent data cliients still in browser
-    clients.forEach(res => res.write(`data: ${data}\n\n`));
 };

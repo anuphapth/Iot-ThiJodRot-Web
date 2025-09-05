@@ -1,50 +1,264 @@
-const resultDiv = document.getElementById('result');
+const path = window.location.pathname;
 
-function renderData(data) {
+if (path.endsWith('index.html') || path === '/') {
+  initParkingStatusPage();
+} else if (path.endsWith('login.html')) {
+  initLoginPage();
+} else if (path.endsWith('dashboard.html')) {
+  initDashboardPage();
+}
+
+function initParkingStatusPage() {
+  const resultDiv = document.getElementById('result');
+
+  function renderData(data) {
     resultDiv.innerHTML = '<h1>สถานะช่องจอดรถ</h1>';
 
     if (!Array.isArray(data)) {
-        console.error('ข้อมูลไม่ใช่ Array:', data);
-        resultDiv.innerHTML += '<p>ข้อมูลผิดพลาด</p>';
-        return;
+      resultDiv.innerHTML += '<p>ข้อมูลผิดพลาด</p>';
+      return;
     }
 
     data.forEach(slot => {
-        const slotDiv = document.createElement('div');
-        slotDiv.textContent = `ช่อง ${slot.slot} : สถานะ - ${slot.status}`;
-        resultDiv.appendChild(slotDiv);
+      const slotDiv = document.createElement('div');
+      slotDiv.textContent = `ช่อง ${slot.slot} : สถานะ - ${slot.status}`;
+      resultDiv.appendChild(slotDiv);
     });
-}
+  }
 
-async function loadInitialStatus() {
+  async function loadInitialStatus() {
     try {
-        const res = await fetch('/api/parking/status');
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const res = await fetch('/api/parking/status');
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
-        const data = await res.json();
-        console.log('ข้อมูลสถานะ:', data);
-        renderData(data);
+      const data = await res.json();
+      renderData(data);
     } catch (err) {
-        console.error("โหลดสถานะเริ่มต้นล้มเหลว", err);
-        resultDiv.innerHTML = '<p>โหลดข้อมูลล้มเหลว</p>';
+      resultDiv.innerHTML = '<p>โหลดข้อมูลล้มเหลว</p>';
+      console.error(err);
     }
-}
+  }
 
-loadInitialStatus();
+  loadInitialStatus();
 
-// SSE สำหรับรับสถานะใหม่แบบ realtime
-const eventSource = new EventSource('/api/events');
+  // SSE สำหรับรับสถานะใหม่แบบ realtime
+  const eventSource = new EventSource('/api/events');
 
-eventSource.onmessage = (event) => {
+  eventSource.onmessage = (event) => {
     try {
-        const data = JSON.parse(event.data);
-        console.log('ข้อมูลสถานะ realtime:', data);
-        renderData(data);
+      const data = JSON.parse(event.data);
+      renderData(data);
     } catch (err) {
-        console.error('แปลงข้อมูล realtime ไม่สำเร็จ', err);
+      console.error('แปลงข้อมูล realtime ไม่สำเร็จ', err);
     }
-};
+  };
 
-eventSource.onerror = (err) => {
+  eventSource.onerror = (err) => {
     console.error("SSE error:", err);
-};
+  };
+
+  // ปุ่มไปหน้า Login (ถ้ามี)
+  const toLoginBtn = document.getElementById('toLoginBtn');
+  if (toLoginBtn) {
+    toLoginBtn.onclick = () => {
+      window.location.href = 'login.html';
+    };
+  }
+
+  setupLogoutButton();
+}
+
+function initLoginPage() {
+  const form = document.getElementById('loginForm');
+
+  if (form) {
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+
+      const username = form.username.value;
+      const password = form.password.value;
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        if (res.ok) {
+          window.location.href = 'dashboard.html';
+        } else {
+          alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+        }
+      } catch (err) {
+        alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
+        console.error(err);
+      }
+    };
+  }
+
+  setupLogoutButton();
+}
+
+function initDashboardPage() {
+  setupLogoutButton();
+
+  const toggleBtn1 = document.getElementById('toggleStatusBtn1');
+  const statusTextElem1 = document.getElementById('carStatusText1');
+
+  const toggleBtn2 = document.getElementById('toggleStatusBtn2');
+  const statusTextElem2 = document.getElementById('carStatusText2');
+
+  const carStatusRef1 = { value: 'ไม่ทราบ' };
+  const carStatusRef2 = { value: 'ไม่ทราบ' };
+
+  async function loadInitialStatus() {
+    try {
+      const res = await fetch('/api/parking/status');
+      if (!res.ok) throw new Error(`โหลดข้อมูลล้มเหลว: ${res.status}`);
+
+      const data = await res.json();
+
+      const slot1 = data.find(s => s.slot === 1);
+      const slot2 = data.find(s => s.slot === 2);
+
+      if (slot1) {
+        carStatusRef1.value = slot1.status;
+        statusTextElem1.textContent = `สถานะของช่อง 1: ${slot1.status}`;
+      } else {
+        statusTextElem1.textContent = `สถานะของช่อง 1: ไม่ทราบ`;
+      }
+
+      if (slot2) {
+        carStatusRef2.value = slot2.status;
+        statusTextElem2.textContent = `สถานะของช่อง 2: ${slot2.status}`;
+      } else {
+        statusTextElem2.textContent = `สถานะของช่อง 2: ไม่ทราบ`;
+      }
+    } catch (err) {
+      statusTextElem1.textContent = "โหลดสถานะไม่สำเร็จ";
+      statusTextElem2.textContent = "โหลดสถานะไม่สำเร็จ";
+      console.error(err);
+    }
+  }
+
+  function getOppositeStatus(currentStatus) {
+    if (currentStatus === 'ว่าง') return 'ซ่อมบำรุง';
+    if (currentStatus === 'ซ่อมบำรุง') return 'ว่าง';
+    return 'ว่าง'; // fallback
+  }
+
+  function statusTextToCode(statusText) {
+    if (statusText === 'ว่าง') return 0;
+    if (statusText === 'ซ่อมบำรุง') return 2;
+    return -1;
+  }
+
+  function setupToggleButton(toggleBtn, statusElem, slotNumber, carStatusRef) {
+    toggleBtn.onclick = async () => {
+      // ปิดปุ่มระหว่างส่งข้อมูล
+      toggleBtn.disabled = true;
+
+      const oldStatus = carStatusRef.value;
+
+      // สลับสถานะในตัวแปรและ UI
+      carStatusRef.value = getOppositeStatus(carStatusRef.value);
+      statusElem.textContent = `สถานะของช่อง ${slotNumber}: ${carStatusRef.value}`;
+
+      const statusCode = statusTextToCode(carStatusRef.value);
+
+      if (statusCode === -1) {
+        alert('สถานะไม่ถูกต้อง ไม่สามารถส่งข้อมูลได้');
+        toggleBtn.disabled = false; // เปิดปุ่มคืน
+        return;
+      }
+
+      const payload = {
+        slot: Number(slotNumber),
+        status: statusCode
+      };
+
+      try {
+        const res = await fetch('/api/admin/controll', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.message || `ส่งข้อมูลไม่สำเร็จ: ${res.status}`);
+        }
+      } catch (err) {
+        alert(`เกิดข้อผิดพลาด: ${err.message}`);
+        // rollback สถานะถ้าส่งไม่สำเร็จ
+        carStatusRef.value = oldStatus;
+        statusElem.textContent = `สถานะของช่อง ${slotNumber}: ${oldStatus}`;
+      } finally {
+        // เปิดปุ่มคืนไม่ว่าจะสำเร็จหรือผิดพลาด
+        toggleBtn.disabled = false;
+      }
+    };
+  }
+
+  // โหลดสถานะตอนเริ่มต้น
+  loadInitialStatus();
+
+  // SSE + reconnect logic
+  function createEventSource() {
+    const eventSource = new EventSource('/api/events');
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        data.forEach(slot => {
+          if (slot.slot === 1) {
+            carStatusRef1.value = slot.status;
+            statusTextElem1.textContent = `สถานะของช่อง 1: ${slot.status}`;
+          } else if (slot.slot === 2) {
+            carStatusRef2.value = slot.status;
+            statusTextElem2.textContent = `สถานะของช่อง 2: ${slot.status}`;
+          }
+        });
+      } catch (err) {
+        console.error('แปลงข้อมูล SSE ไม่สำเร็จ', err);
+      }
+    };
+
+    eventSource.onerror = () => {
+      console.warn('SSE connection lost, reconnecting in 3 seconds...');
+      eventSource.close();
+      setTimeout(createEventSource, 3000);
+    };
+
+    return eventSource;
+  }
+
+  createEventSource();
+
+  // Setup ปุ่ม toggle
+  setupToggleButton(toggleBtn1, statusTextElem1, 1, carStatusRef1);
+  setupToggleButton(toggleBtn2, statusTextElem2, 2, carStatusRef2);
+}
+
+function setupLogoutButton() {
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.onclick = () => {
+      window.location.href = '/index.html';
+    };
+  }
+}
+
+// เรียก setupLogoutButton และ initDashboardPage (ถ้าเป็นหน้า dashboard) เมื่อโหลด DOM เสร็จ
+window.addEventListener('DOMContentLoaded', () => {
+  setupLogoutButton();
+
+  const path = window.location.pathname;
+  if (path.endsWith('dashboard.html') || path === '/dashboard') {
+    initDashboardPage();
+  }
+});
