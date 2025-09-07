@@ -17,27 +17,30 @@ export const controllPark = async (req, res) => {
 
     try {
         if (status === 2) {
-            // chang status to fixable
-            const result = await db.query(constants.getStatusCar, [slot]);
 
+            // check status befor
+            const result = await db.query(constants.getStatusCar, [slot]);
             if (result.rows[0].status === 2) {
                 return res.status(400).json({ message: "status already 2" });
             }
 
+            // chang status to fix and get off car
             await db.query(constants.carAway, [new Date(), slot]);
             await db.query(constants.changStatus, [status, slot]);
             await notifyClients();
-            return res.status(200).json({ message: "สถานะซ่อมบำรุง" });
+            return res.status(200).json({ message: "Fixble" });
         } else if (status === 0) {
-            // chang status to free
+
+            // check status befor
             const result = await db.query(constants.getStatusCar, [slot]);
             if (result.rows[0].status === 0) {
                 return res.status(400).json({ message: "status already 0" });
             }
 
+            // chang status to ready
             await db.query(constants.changStatus, [status, slot]);
             await notifyClients();
-            return res.status(200).json({ message: "สถานะพร้อมจอด" })
+            return res.status(200).json({ message: "Ready" })
         }
         return res.status(400).json({ message: "Status not 0 or 2" })
     } catch (error) {

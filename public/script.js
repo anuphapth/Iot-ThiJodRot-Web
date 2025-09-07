@@ -12,18 +12,94 @@ function initParkingStatusPage() {
   const resultDiv = document.getElementById('result');
 
   function renderData(data) {
-    resultDiv.innerHTML = '<h1>สถานะช่องจอดรถ</h1>';
-
     if (!Array.isArray(data)) {
-      resultDiv.innerHTML += '<p>ข้อมูลผิดพลาด</p>';
+      resultDiv.innerHTML = '<p>ข้อมูลผิดพลาด</p>';
       return;
     }
 
+    resultDiv.innerHTML = ''; // ล้างข้อมูลเดิม
+
+    const title = document.createElement('h2');
+    title.style.textAlign = 'center';
+    title.style.fontSize = '2.2rem'; // ตัวอักษรใหญ่ขึ้น
+    title.style.marginBottom = '30px';
+    resultDiv.appendChild(title);
+
+    // container คล้ายตาราง
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gridTemplateColumns = 'max-content max-content';
+    container.style.width = '100%';  // ให้เต็มพื้นที่ parent
+    container.style.maxWidth = '600px';
+    container.style.margin = '0 auto';
+    container.style.gap = '20px 60px'; // <-- เพิ่มช่องว่างระหว่างคอลัมน์ (จาก 40px เป็น 60px)
+    container.style.justifyContent = 'center';
+  
+
+    // หัวตารางแบบไม่มีเส้น
+    const headerZone = document.createElement('div');
+    headerZone.textContent = 'พื้นที่โซน A';
+    headerZone.style.fontWeight = '700';
+    headerZone.style.fontSize = '1.4rem';
+    headerZone.style.textAlign = 'center'; // <-- เปลี่ยนเป็นกึ่งกลาง
+
+    const headerStatus = document.createElement('div');
+    headerStatus.textContent = 'สถานะ';
+    headerStatus.style.fontWeight = '700';
+    headerStatus.style.fontSize = '1.4rem';
+    headerStatus.style.textAlign = 'center'; // <-- เปลี่ยนเป็นกึ่งกลาง
+
+    container.appendChild(headerZone);
+    container.appendChild(headerStatus);
+
     data.forEach(slot => {
-      const slotDiv = document.createElement('div');
-      slotDiv.textContent = `ช่อง ${slot.slot} : สถานะ - ${slot.status}`;
-      resultDiv.appendChild(slotDiv);
+      const zoneDiv = document.createElement('div');
+      zoneDiv.textContent = `A${slot.slot}`;
+      zoneDiv.style.fontSize = '1.2rem';
+      zoneDiv.style.fontWeight = '600';
+      zoneDiv.style.color = '#333';
+      zoneDiv.style.textAlign = 'center'; // <-- กึ่งกลางข้อความใน cell
+
+      const statusDiv = document.createElement('div');
+      statusDiv.textContent = slot.status;
+      statusDiv.style.fontSize = '1.2rem';
+      statusDiv.style.fontWeight = '600';
+      statusDiv.style.textAlign = 'center'; // <-- กึ่งกลางข้อความใน cell
+
+      // สีสถานะ
+      if (slot.status === 'ว่าง') {
+        statusDiv.style.color = '#155724';
+        statusDiv.style.backgroundColor = '#d4edda';
+        statusDiv.style.padding = '6px 12px';
+        statusDiv.style.borderRadius = '20px';
+        statusDiv.style.display = 'inline-block';
+        statusDiv.style.textAlign = 'center';
+        statusDiv.style.justifySelf = 'center';  // ให้จัดกึ่งกลางใน grid cell
+        // ลบ minWidth หรือไม่กำหนดเลย
+      } else if (slot.status === 'จอด') {
+        statusDiv.style.color = '#004085';
+        statusDiv.style.backgroundColor = '#cce5ff';
+        statusDiv.style.padding = '6px 12px';
+        statusDiv.style.borderRadius = '20px';
+        statusDiv.style.display = 'inline-block';
+        statusDiv.style.textAlign = 'center';
+        statusDiv.style.justifySelf = 'center';  // ให้จัดกึ่งกลางใน grid cell
+      } else if (slot.status === 'ซ่อมบำรุง') {
+        statusDiv.style.color = '#721c24';
+        statusDiv.style.backgroundColor = '#f8d7da';
+        statusDiv.style.padding = '6px 12px';
+        statusDiv.style.borderRadius = '20px';
+        statusDiv.style.display = 'inline-block';
+        statusDiv.style.textAlign = 'center';
+        statusDiv.style.justifySelf = 'center';  // ให้จัดกึ่งกลางใน grid cell
+      }
+
+
+      container.appendChild(zoneDiv);
+      container.appendChild(statusDiv);
     });
+
+    resultDiv.appendChild(container);
   }
 
   async function loadInitialStatus() {
