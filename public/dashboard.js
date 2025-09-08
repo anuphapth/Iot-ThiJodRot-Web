@@ -125,6 +125,27 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(createEventSource, 3000); // Retry connection after 3 seconds
     };
   }
+  // Setup logout button
+  const logoutBtn = document.getElementById('logoutBtn');
+  logoutBtn.addEventListener('click', async () => {
+    try {
+      // (Optional) เรียก API เพื่อ logout ฝั่งเซิร์ฟเวอร์
+      await fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'include', // ส่ง cookie ด้วย ถ้าใช้
+      });
+    } catch (err) {
+      console.error('Logout failed:', err);
+    } finally {
+      // เคลียร์ session ฝั่ง client (ถ้ามี)
+      localStorage.removeItem('token'); // ถ้าใช้ localStorage
+      sessionStorage.clear(); // หรือใช้ sessionStorage
+
+      // เปลี่ยนไปหน้า login
+      window.location.href = 'index.html';
+    }
+  });
+
 
   // Initialize app
   loadInitialStatus();

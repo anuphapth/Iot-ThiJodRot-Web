@@ -25,5 +25,8 @@ export const login = async (req, res) => {
 }
 
 export const logout = (req, res) => {
-    res.status(200).json({ message: 'Logout สำเร็จ' });
+    req.session.destroy(() => {
+        res.clearCookie('connect.sid'); // หรือชื่อ cookie ของคุณ
+        res.sendStatus(200);
+    });
 };
