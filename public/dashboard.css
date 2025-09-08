@@ -80,3 +80,29 @@
   display: inline-block;
   min-width: 0;
 }
+
+@media (max-width: 480px) {
+  .slot-status-container {
+    max-width: 100%;
+    margin: 16px 12px;
+    padding: 12px;
+  }
+
+  .status-text {
+    font-size: 1.2rem;
+  }
+
+  .toggle-status-btn {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+
+  #navbar .logo {
+    font-size: 1.3rem;
+  }
+
+  #navbar button {
+    font-size: 1rem;
+    padding: 8px 14px;
+  }
+}

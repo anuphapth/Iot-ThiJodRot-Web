@@ -32,7 +32,8 @@ body {
   background-color: white;
   border-radius: 10px;
   padding: 20px;
-  width: 220px;
+  width: 100%;
+  max-width: 360px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   transition: transform 0.2s;
@@ -141,6 +142,14 @@ td {
 @media (max-width: 768px) {
   body {
     font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #result {
+    display: grid;
+    grid-template-columns: 1fr; /* 1 column */
+    gap: 20px;
   }
 }
 
