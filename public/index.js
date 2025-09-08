@@ -37,10 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
     data.forEach(slot => {
       const zoneDiv = document.createElement('div');
       zoneDiv.textContent = `A${slot.slot}`;
+      zoneDiv.style.fontSize = '2rem';
       zoneDiv.classList.add('zone');
 
       const statusDiv = document.createElement('div');
       statusDiv.textContent = slot.status;
+      statusDiv.style.fontSize = '1.6rem';
       statusDiv.classList.add('status');
 
       // Add status color classes based on status text
