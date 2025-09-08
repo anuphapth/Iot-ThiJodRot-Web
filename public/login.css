@@ -1,0 +1,58 @@
+/* Center the login form vertically and horizontally */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f6f8;
+    margin: 0;
+    font-family: "Kanit", sans-serif;
+}
+
+/* Style the login form container */
+#loginForm {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Style for input fields */
+#loginForm input {
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-family: "Kanit", sans-serif;
+    transition: border-color 0.2s ease-in-out;
+}
+
+/* Change border color on input focus */
+#loginForm input:focus {
+    border-color: #FFB67A;
+    outline: none;
+}
+
+/* Style for submit button */
+#loginForm button {
+    background-color: #FFB67A;
+    color: #333;
+    border: none;
+    padding: 12px;
+    border-radius: 20px;
+    font-family: "Epunda Slab", serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for button */
+#loginForm button:hover {
+    background-color: #e29d5d;
+}

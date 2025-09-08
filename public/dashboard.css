@@ -1,0 +1,82 @@
+/* Container for each slot status and button, vertical layout, centered */
+.slot-status-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  /* space between status text and button */
+  background: white;
+  max-width: 350px;
+  margin: 20px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+}
+
+/* Status text style */
+.status-text {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+  /* remove default margin */
+  color: #333;
+}
+
+/* Toggle button style */
+.toggle-status-btn {
+  background-color: #FFB67A;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 20px;
+  font-family: "Epunda Slab", serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+  margin: 0;
+  /* remove default margin */
+}
+
+/* Button hover effect */
+.toggle-status-btn:hover:not(:disabled) {
+  background-color: #e29d5d;
+}
+
+/* Disabled button style */
+.toggle-status-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Status colors: vacant - green */
+.status-vacant {
+  background-color: #4CAF50;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  min-width: 0;
+}
+
+/* Status colors: occupied - red */
+.status-occupied {
+  background-color: #F44336;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  min-width: 0;
+}
+
+/* Status colors: maintenance - blue */
+.status-maintenance {
+  background-color: #3300ff;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  min-width: 0;
+}

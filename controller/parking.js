@@ -71,7 +71,6 @@ export const parkLog = async (req, res) => {
 export const getParkingStatus = async (req, res) => {
     try {
         const { rows } = await db.query(constants.getStatus);
-        console.log(rows)
         return res.status(200).json(rows);
     } catch (error) {
         return res.status(500).json({ error: "Internal Server Error" });

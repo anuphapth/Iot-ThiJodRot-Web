@@ -1,0 +1,139 @@
+/* Centered main heading */
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+/* Base font size, font family, and line height for readability */
+body {
+  font-size: 24px;
+  font-family: 'Kanit', sans-serif;
+  /* Custom font */
+  line-height: 1.5;
+  /* Better readability */
+}
+
+/* Container for results, centered and responsive */
+#result {
+  font-size: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  margin: 30px auto 20px auto;
+  width: 100%;
+  max-width: 700px;
+  box-sizing: border-box;
+}
+
+/* Card style for each slot */
+.slot-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 220px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+/* Lift card slightly on hover for effect */
+.slot-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Slot number style */
+.slot-number {
+  font-size: inherit;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Status label styling, rounded with padding */
+.status {
+  font-size: inherit;
+  padding: 8px 16px;
+  /* Balanced spacing */
+  border-radius: 20px;
+  display: inline-block;
+  font-weight: 600;
+  width: fit-content;
+  text-align: center;
+  color: white;
+  margin: 0 auto;
+}
+
+/* Status colors by text (Thai class names) */
+.status.ว่าง {
+  background-color: #d4edda;
+  color: #4CAF50;
+  /* Green */
+}
+
+.status.ไม่ว่าง {
+  background-color: #cce5ff;
+  color: #F44336;
+  /* Red */
+}
+
+.status.ซ่อมบำรุง {
+  background-color: #f8d7da;
+  color: #3300ffff;
+  /* Blue */
+}
+
+/* Table styling with spacing and rounded corners */
+table {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 30px auto;
+  border-collapse: separate;
+  border-spacing: 40px 10px;
+}
+
+/* Center text vertically and horizontally in table cells */
+th,
+td {
+  font-size: inherit;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Status label styling repeated for table */
+.status {
+  font-size: inherit;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  font-weight: 600;
+  width: fit-content;
+  text-align: center;
+  color: white;
+  margin: 0 auto;
+}
+
+/* Status colors by English class names */
+.status-vacant {
+  background-color: #4CAF50;
+  /* Green */
+}
+
+.status-occupied {
+  background-color: #F44336;
+  /* Red */
+}
+
+.status-maintenance {
+  background-color: #3300ff;
+  /* Blue */
+}
+
+/* Zone label style */
+.zone {
+  font-size: inherit;
+  font-weight: 700;
+  text-align: center;
+}

@@ -3,147 +3,27 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Thijodrod</title>
-    <style>
-        #navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 30px;
-            background-color: #FFB67A;
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        #navbar .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        #navbar button#toLoginBtn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-            margin-left: auto;
-            margin-right: 0;
-        }
-
-        #navbar button#toLoginBtn:hover {
-            background-color: #0056b3;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        #result {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-            justify-content: center;
-            /* เพิ่มอันนี้ */
-            margin: 30px auto 20px auto;
-            /* ปรับให้ margin ซ้าย-ขวาเป็น auto */
-            width: 100%;
-            max-width: 700px;
-            /* กำหนดความกว้างสูงสุดเพื่อควบคุม layout */
-            box-sizing: border-box;
-        }
-
-        .slot-card {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            width: 220px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: transform 0.2s;
-        }
-
-        .slot-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .slot-number {
-            font-size: 22px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .status {
-            font-size: 16px;
-            padding: 8px;
-            border-radius: 5px;
-            display: inline-block;
-        }
-
-        .status.ว่าง {
-            background-color: #d4edda;
-            color: #4CAF50;
-        }
-
-        .status.จอด {
-            background-color: #cce5ff;
-            color: #004085;
-        }
-
-        .status.ซ่อมบำรุง {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
-        table {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-            margin: 30px auto;
-            /* จัดกึ่งกลางตาราง */
-            border-collapse: separate;
-            /* ทำให้ใช้ช่องว่างระหว่างเซลล์ได้ */
-            border-spacing: 40px 10px;
-            /* ระยะห่างระหว่างคอลัมน์ (40px) และแถว (10px) */
-        }
-
-        th,
-        td {
-            font-size: 16px;
-            text-align: center;
-            /* จัดกึ่งกลางข้อความในคอลัมน์ */
-            vertical-align: middle;
-        }
-    </style>
+    <title>Thijodrot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Epunda+Slab:ital,wght@0,300..900;1,300..900&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Thasadith:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="index.css" />
 </head>
 
 <body>
     <nav id="navbar">
-        <div class="logo">Thijodrod</div>
+        <div class="logo">
+            <a href="index.html">Thijodrot</a>
+        </div>
         <button id="toLoginBtn">Login</button>
     </nav>
 
     <div id="result">กำลังโหลดข้อมูล...</div>
 
-    <script src="script.js"></script>
+    <script src="index.js"></script>
 </body>
 
 </html>
