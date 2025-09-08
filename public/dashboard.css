@@ -7,7 +7,7 @@
   /* space between status text and button */
   background: white;
   max-width: 350px;
-  margin: 20px auto;
+  margin: 8px auto;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 15px;
@@ -16,10 +16,9 @@
 
 /* Status text style */
 .status-text {
-  font-size: 1.4rem;
+  font-size: 2rem;
   font-weight: 600;
   margin: 0;
-  /* remove default margin */
   color: #333;
 }
 
@@ -55,36 +54,39 @@
 .status-vacant {
   background-color: #4CAF50;
   color: white;
-  padding: 6px 12px;
+  padding: 1px 12px;
   border-radius: 20px;
   display: inline-block;
   min-width: 0;
+  font-size: 1.6rem;
 }
 
 /* Status colors: occupied - red */
 .status-occupied {
   background-color: #F44336;
   color: white;
-  padding: 6px 12px;
+  padding: 1px 12px;
   border-radius: 20px;
   display: inline-block;
   min-width: 0;
+  font-size: 1.6rem;
 }
 
 /* Status colors: maintenance - blue */
 .status-maintenance {
   background-color: #3300ff;
   color: white;
-  padding: 6px 12px;
+  padding: 1px 12px;
   border-radius: 20px;
   display: inline-block;
   min-width: 0;
+  font-size: 1.6rem;
 }
 
 @media (max-width: 480px) {
   .slot-status-container {
     max-width: 100%;
-    margin: 16px 12px;
+    margin: 8px auto;
     padding: 12px;
   }
 
@@ -95,14 +97,5 @@
   .toggle-status-btn {
     font-size: 1rem;
     padding: 10px 20px;
-  }
-
-  #navbar .logo {
-    font-size: 1.3rem;
-  }
-
-  #navbar button {
-    font-size: 1rem;
-    padding: 8px 14px;
   }
 }

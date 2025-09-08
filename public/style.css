@@ -91,3 +91,19 @@ body {
 #navbar button#logoutBtn:hover {
     background-color: #feb82b;
 }
+
+@media (max-width: 480px) {
+  #navbar {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+  }
+
+  #navbar .logo {
+    font-size: 1.3rem;
+  }
+
+  #navbar button {
+    font-size: 1rem;
+    padding: 6px 10px;
+  }
+}

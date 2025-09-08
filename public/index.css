@@ -25,6 +25,8 @@ body {
   width: 100%;
   max-width: 700px;
   box-sizing: border-box;
+  min-height: 30vh;
+  text-align: center;
 }
 
 /* Card style for each slot */
@@ -148,7 +150,8 @@ td {
 @media (max-width: 480px) {
   #result {
     display: grid;
-    grid-template-columns: 1fr; /* 1 column */
+    grid-template-columns: 1fr;
+    /* 1 column */
     gap: 20px;
   }
 }
