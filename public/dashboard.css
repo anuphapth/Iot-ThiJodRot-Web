@@ -98,4 +98,11 @@
     font-size: 1rem;
     padding: 10px 20px;
   }
+  .status-vacant,
+  .status-occupied,
+  .status-maintenance{
+    font-size: 1rem;
+  }
+
+
 }
