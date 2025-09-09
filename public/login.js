@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (res.ok) {
-        window.location.href = 'dashboard.html'; // Redirect on success
+        window.location.href = 'dashboard'; // Redirect on success
       } else {
         alert('Invalid username or password');
         loginBtn.disabled = false; // Re-enable button

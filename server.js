@@ -3,6 +3,9 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
 import { readdirSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import pageRoutes from './routes/pages.js';
 
 dotenv.config();
 const app = express();
@@ -10,17 +13,21 @@ const app = express();
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public'));
 app.use(morgan("dev"));
+app.use(express.static('public'));
 
-// Load All Routes
+// Page Routes (เช่น /login โหลด login.html)
+app.use('/', pageRoutes);
+
+// API Routes (เช่น POST /api/login)
 readdirSync("./routes").forEach(async (r) => {
-  const router = await import(`./routes/${r}`);
-  app.use("/api", router.default)
+  if (r !== 'pages.js') {
+    const router = await import(`./routes/${r}`);
+    app.use("/api", router.default);
+  }
 });
 
-// server
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Server is running`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const toLoginBtn = document.getElementById('toLoginBtn');
   if (toLoginBtn) {
     toLoginBtn.onclick = () => {
-      window.location.href = 'login.html';
+      window.location.href = 'login';
     };
   }
 });
