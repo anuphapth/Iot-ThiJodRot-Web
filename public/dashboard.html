@@ -11,6 +11,12 @@
     rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="dashboard.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Date adapter for Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
@@ -23,24 +29,67 @@
   </nav>
   </nav>
 
-  <main>
-    <div class="slot-status-container">
-      <p id="carStatusText1" class="status-text">
-        <span class="slot-label">A1</span>
-        <span id="statusValue1"></span>
-      </p>
-      <button id="toggleStatusBtn1" class="toggle-status-btn">กำลังโหลด...</button>
-    </div>
+  <main style="display: flex; gap: 2rem; padding: 1rem;">
+    <!-- ซ้าย: ปรับสถานะ -->
+    <section style="flex: 1;">
+      <h2>ปรับสถานะช่องจอด</h2>
+      <div class="slot-status-container">
+        <p id="carStatusText1" class="status-text">
+          <span class="slot-label">A1</span>
+          <span id="statusValue1"></span>
+        </p>
+        <button id="toggleStatusBtn1" class="toggle-status-btn">กำลังโหลด...</button>
+      </div>
 
-    <div class="slot-status-container">
-      <p id="carStatusText2" class="status-text">
-        <span class="slot-label">A2</span>
-        <span id="statusValue2"></span>
-      </p>
-      <button id="toggleStatusBtn2" class="toggle-status-btn">กำลังโหลด...</button>
-    </div>
+      <div class="slot-status-container">
+        <p id="carStatusText2" class="status-text">
+          <span class="slot-label">A2</span>
+          <span id="statusValue2"></span>
+        </p>
+        <button id="toggleStatusBtn2" class="toggle-status-btn">กำลังโหลด...</button>
+      </div>
+    </section>
+
+    <!-- ขวา: สถิติ -->
+    <section class="chart-container" style="flex: 2;">
+      <h2>สถิติการจอดรถ</h2>
+
+      <canvas id="parkingDurationChart"></canvas>
+      <canvas id="parkingEntryChart"></canvas>
+
+      <div class="filter-container" style="margin-top: 1rem;">
+        <label for="monthSelect">เดือน:</label>
+        <select id="monthSelect">
+          <option value="">-- ทั้งปี --</option>
+          <option value="1">มกราคม</option>
+          <option value="2">กุมภาพันธ์</option>
+          <option value="3">มีนาคม</option>
+          <option value="4">เมษายน</option>
+          <option value="5">พฤษภาคม</option>
+          <option value="6">มิถุนายน</option>
+          <option value="7">กรกฎาคม</option>
+          <option value="8">สิงหาคม</option>
+          <option value="9">กันยายน</option>
+          <option value="10">ตุลาคม</option>
+          <option value="11">พฤศจิกายน</option>
+          <option value="12">ธันวาคม</option>
+        </select>
+
+        <label for="yearSelect">ปี:</label>
+        <select id="yearSelect"></select>
+
+        <button id="loadChartBtn">โหลดข้อมูล</button>
+      </div>
+    </section>
   </main>
 
+  <!-- ✅ Chart.js core -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- ✅ Date adapter (ต้องมาก่อน dashboard.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+  <!-- ✅ Main script -->
   <script src="dashboard.js"></script>
 </body>
 

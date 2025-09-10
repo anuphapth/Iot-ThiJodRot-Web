@@ -3,11 +3,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  /* space between status text and button */
+  gap: 4px; /* space between status text and button */
   background: white;
   max-width: 350px;
-  margin: 8px auto;
+  margin: 8px auto 1.5rem auto; /* bottom margin for spacing */
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 15px;
@@ -16,9 +15,9 @@
 
 /* Status text style */
 .status-text {
-  font-size: 2rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  margin: 0;
+  margin: 0 0 0.5rem 0;
   color: #333;
 }
 
@@ -26,17 +25,16 @@
 .toggle-status-btn {
   background-color: #FFB67A;
   border: none;
-  padding: 12px 28px;
+  padding: 0.6rem 1rem;
   border-radius: 20px;
   font-family: "Epunda Slab", serif;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #333;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease;
   margin: 0;
-  /* remove default margin */
 }
 
 /* Button hover effect */
@@ -57,8 +55,7 @@
   padding: 1px 12px;
   border-radius: 20px;
   display: inline-block;
-  min-width: 0;
-  font-size: 1.6rem;
+  font-size: 1rem;
 }
 
 /* Status colors: occupied - red */
@@ -68,8 +65,7 @@
   padding: 1px 12px;
   border-radius: 20px;
   display: inline-block;
-  min-width: 0;
-  font-size: 1.6rem;
+  font-size: 1rem;
 }
 
 /* Status colors: maintenance - blue */
@@ -79,29 +75,174 @@
   padding: 1px 12px;
   border-radius: 20px;
   display: inline-block;
-  min-width: 0;
-  font-size: 1.6rem;
+  font-size: 1rem;
 }
 
 @media (max-width: 480px) {
   .slot-status-container {
     max-width: 100%;
-    margin: 8px auto;
+    margin: 8px auto 1rem auto;
     padding: 12px;
   }
 
   .status-text {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
   .toggle-status-btn {
-    font-size: 1rem;
-    padding: 10px 20px;
-  }
-  .status-vacant,
-  .status-occupied,
-  .status-maintenance{
-    font-size: 1rem;
+    font-size: 0.9rem;
+    padding: 8px 16px;
   }
 
+  .status-vacant,
+  .status-occupied,
+  .status-maintenance {
+    font-size: 0.9rem;
+  }
+}
+
+.chart-container {
+  max-width: 800px;
+  margin: 0; /* ลบ margin บน-ล่าง ออก */
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.chart-container canvas {
+  width: 100% !important; /* บังคับให้เต็ม */
+  height: auto !important; /* รักษาสัดส่วน */
+  max-height: 300px; /* กำหนดสูงสุด */
+  display: block;
+  margin: 1rem 0;
+}
+
+.filter-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 1rem auto 0 auto;
+  text-align: center;
+}
+
+.filter-container select,
+.filter-container button {
+  padding: 0.4rem 0.8rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: "Kanit", sans-serif;
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+main {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  justify-content: center;  /* กึ่งกลางแนวนอนทั้งสองส่วน */
+  min-height: 80vh;         /* ความสูงรวม */
+}
+
+/* กล่องสีพื้นหลังสำหรับ section ปรับสถานะ */
+main > section:first-child {
+  position: relative; /* สำหรับการวางกล่อง background */
+  flex: 0 0 320px;
+  max-width: 350px;
+  align-self: flex-start;
+  padding: 1rem;
+  z-index: 1; /* ให้อยู่บนกล่องสี */
+}
+
+/* กล่องสีพื้นหลังแบบ absolute วางข้างหลัง */
+main > section:first-child::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff33; /* สีส้มอ่อน (ปรับได้) */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: -1; /* วางไว้ข้างหลังเนื้อหา */
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* หน้าจอเล็กกว่า 480px: stack แนวตั้ง */
+@media (max-width: 480px) {
+  main {
+    flex-direction: column;
+    padding: 1rem 0.5rem;
+    gap: 1rem;
+  }
+
+  main > section:first-child,
+  main > section:last-child {
+    flex: none;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  main > section:first-child::before {
+    border-radius: 12px;
+  }
+}
+
+/* หน้าจอระหว่าง 481px - 720px: แนวนอน แต่ปรับขนาด */
+@media (min-width: 481px) and (max-width: 720px) {
+  main {
+    flex-direction: row;
+    gap: 1rem;
+    padding: 1rem;
+    align-items: flex-start;
+  }
+
+  main > section:first-child {
+    flex: 0 0 40%; /* ฝั่งซ้ายประมาณ 40% */
+    max-width: none;
+    padding: 1rem;
+  }
+
+  main > section:last-child {
+    flex: 1 1 60%; /* ฝั่งขวา 60% */
+    min-width: 0;
+  }
+
+  main > section:first-child::before {
+    border-radius: 12px;
+  }
+}
+
+/* หน้าจอใหญ่กว่า 720px: ตามเดิม */
+@media (min-width: 721px) {
+  main {
+    flex-direction: row;
+    gap: 0.5rem;
+    padding: 1rem;
+    align-items: center;
+  }
+
+  main > section:first-child {
+    flex: 0 0 320px;
+    max-width: 350px;
+    align-self: flex-start;
+    padding: 1rem;
+  }
+
+  main > section:last-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
 }

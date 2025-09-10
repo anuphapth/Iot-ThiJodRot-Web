@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Parking Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <h2>วิเคราะห์ที่จอดรถ</h2>
+
+    <form id="filterForm">
+        <label>
+            ประเภทช่วง:
+            <select id="rangeType" name="rangeType">
+                <option value="year">ปี</option>
+                <option value="month">เดือน</option>
+            </select>
+        </label>
+
+        <label>
+            ปี:<input type="number" id="yearInput" name="year" value="2025" min="2000" max="2100">
+        </label>
+
+        <label id="monthLabel" style="display: none;">
+            เดือน:
+            <select id="monthInput" name="month">
+                <option value="1">มกราคม</option>
+                <option value="2">กุมภาพันธ์</option>
+                <option value="3">มีนาคม</option>
+                <option value="4">เมษายน</option>
+                <option value="5">พฤษภาคม</option>
+                <option value="6">มิถุนายน</option>
+                <option value="7">กรกฎาคม</option>
+                <option value="8">สิงหาคม</option>
+                <option value="9">กันยายน</option>
+                <option value="10">ตุลาคม</option>
+                <option value="11">พฤศจิกายน</option>
+                <option value="12">ธันวาคม</option>
+            </select>
+        </label>
+
+        <button type="submit">แสดงข้อมูล</button>
+    </form>
+
+    <canvas id="chartCanvas" width="800" height="400"></canvas>
+
+    <script>
+        const form = document.getElementById('filterForm');
+        const rangeType = document.getElementById('rangeType');
+        const monthLabel = document.getElementById('monthLabel');
+        let chart;
+
+        rangeType.addEventListener('change', () => {
+            monthLabel.style.display = rangeType.value === 'month' ? 'inline' : 'none';
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const type = rangeType.value;
+            const year = document.getElementById('yearInput').value;
+            const month = document.getElementById('monthInput').value;
+
+            let url = `/api/parking-data?type=${type}&year=${year}`;
+            if (type === 'month') url += `&month=${month}`;
+
+            const res = await fetch(url);
+            const data = await res.json();
+
+            const labels = data.map(item => item.label);
+            const values = data.map(item => item.total_cars);
+
+            if (chart) chart.destroy();
+
+            chart = new Chart(document.getElementById('chartCanvas'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'จำนวนรถจอด',
+                        data: values,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
