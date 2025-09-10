@@ -107,3 +107,25 @@ body {
     padding: 6px 10px;
   }
 }
+
+html, body {
+  padding: env(safe-area-inset-top, 0)
+           env(safe-area-inset-right, 0)
+           env(safe-area-inset-bottom, 0)
+           env(safe-area-inset-left, 0);
+}
+
+#navbar {
+  padding-top: calc(env(safe-area-inset-top, 0) + 10px);
+  padding-left: calc(env(safe-area-inset-left, 0) + 16px);
+  padding-right: calc(env(safe-area-inset-right, 0) + 16px);
+}
+
+@supports(padding: env(safe-area-inset-top)) {
+  html, body {
+    padding: env(safe-area-inset-top)
+             env(safe-area-inset-right)
+             env(safe-area-inset-bottom)
+             env(safe-area-inset-left);
+  }
+}
