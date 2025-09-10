@@ -184,3 +184,7 @@ main.dashboard .right-panel {
     font-size: 0.9rem;
   }
 }
+
+h2 {
+  text-align: center;
+}
