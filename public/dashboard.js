@@ -1,6 +1,16 @@
 let durationChart;
 let entryChart;
 
+// ฟังก์ชันแปลงเลขสถานะเป็นข้อความคำอธิบาย
+function statusCodeToText(code) {
+  switch (code) {
+    case 0: return 'ว่าง';
+    case 1: return 'ไม่ว่าง';
+    case 2: return 'ซ่อมบำรุง';
+    default: return 'ไม่ทราบสถานะ';
+  }
+}
+
 // ฟังก์ชันวาดกราฟจำนวนชั่วโมง
 function drawDurationChart(data) {
   const ctx = document.getElementById('parkingDurationChart').getContext('2d');
@@ -35,21 +45,18 @@ function drawEntryTimeChart(entryTimes) {
   const ctx = document.getElementById('parkingEntryChart').getContext('2d');
   if (entryChart) entryChart.destroy();
 
-  // เตรียมข้อมูลแบบ histogram สำหรับแต่ละ slot
   const labels = [];
   for (let h = 0; h < 24; h++) {
-    labels.push(`${h}:00 - ${h+1}:00`);
+    labels.push(`${h}:00 - ${h + 1}:00`);
   }
 
   const datasets = Object.keys(entryTimes).map((slot, i) => {
-    // นับจำนวนเข้าในแต่ละชั่วโมง
     const counts = new Array(24).fill(0);
     entryTimes[slot].forEach(date => {
       const hour = date.getHours();
       counts[hour]++;
     });
 
-    // สีพื้นฐาน เปลี่ยนตาม slot
     const colors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0'];
     return {
       label: `Slot ${slot}`,
@@ -124,13 +131,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const ref1 = { value: 'ไม่ทราบ' };
   const ref2 = { value: 'ไม่ทราบ' };
 
+  // เปลี่ยนสถานะถัดไป (วนลูปว่าง -> ไม่ว่าง -> ซ่อมบำรุง -> ว่าง ...)
   function getNextStatus(status) {
-    if (status === 'ว่าง') return 'ซ่อมบำรุง';
+    if (status === 'ว่าง') return 'ไม่ว่าง';
     if (status === 'ไม่ว่าง') return 'ซ่อมบำรุง';
     if (status === 'ซ่อมบำรุง') return 'ว่าง';
     return 'ว่าง';
   }
 
+  // แปลงสถานะคำเป็นโค้ดตัวเลข
   function statusTextToCode(status) {
     if (status === 'ว่าง') return 0;
     if (status === 'ไม่ว่าง') return 1;
@@ -143,22 +152,26 @@ document.addEventListener('DOMContentLoaded', () => {
     button.textContent = `เปลี่ยนสถานะเป็น ${next}`;
   }
 
-  function applyStatus(slot, status, btn, statusElem, ref) {
-    ref.value = status;
+  // แสดงสถานะใน UI และอัพเดตปุ่ม
+  function applyStatus(slot, statusCodeOrText, btn, statusElem, ref) {
+    let statusText = typeof statusCodeOrText === 'number' ? statusCodeToText(statusCodeOrText) : statusCodeOrText;
+
+    ref.value = statusText;
     statusElem.classList.remove('status-vacant', 'status-occupied', 'status-maintenance');
-    statusElem.textContent = status;
+    statusElem.textContent = statusText;
 
-    if (status === 'ว่าง') statusElem.classList.add('status-vacant');
-    else if (status === 'ไม่ว่าง') statusElem.classList.add('status-occupied');
-    else if (status === 'ซ่อมบำรุง') statusElem.classList.add('status-maintenance');
+    if (statusText === 'ว่าง') statusElem.classList.add('status-vacant');
+    else if (statusText === 'ไม่ว่าง') statusElem.classList.add('status-occupied');
+    else if (statusText === 'ซ่อมบำรุง') statusElem.classList.add('status-maintenance');
 
-    updateButtonText(btn, status);
+    updateButtonText(btn, statusText);
   }
 
   async function loadInitialStatus() {
     try {
       const res = await fetch('/api/parking/status');
       const data = await res.json();
+
       const slot1 = data.find(s => s.slot === 1);
       const slot2 = data.find(s => s.slot === 2);
 

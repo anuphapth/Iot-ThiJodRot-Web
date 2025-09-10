@@ -1,6 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
   const resultDiv = document.getElementById('result');
 
+  // ฟังก์ชันแปลงเลขสถานะเป็นข้อความคำอธิบาย
+  function getStatusText(statusNum) {
+    switch (statusNum) {
+      case 0:
+        return "ว่าง";
+      case 1:
+        return "ไม่ว่าง";
+      case 2:
+        return "ซ่อมบำรุง";
+      default:
+        return "ไม่ทราบสถานะ";
+    }
+  }
+
   // Render parking slot data into a 2-column grid
   function renderData(data) {
     if (!Array.isArray(data)) {
@@ -41,16 +55,19 @@ document.addEventListener('DOMContentLoaded', () => {
       zoneDiv.classList.add('zone');
 
       const statusDiv = document.createElement('div');
-      statusDiv.textContent = slot.status;
+
+      // แปลงเลขสถานะเป็นคำอธิบาย
+      statusDiv.textContent = getStatusText(slot.status);
+
       statusDiv.style.fontSize = '1.6rem';
       statusDiv.classList.add('status');
 
-      // Add status color classes based on status text
-      if (slot.status === 'ว่าง') {
+      // Add status color classes based on numeric status
+      if (slot.status === 0) {
         statusDiv.classList.add('status-vacant');
-      } else if (slot.status === 'ไม่ว่าง') {
+      } else if (slot.status === 1) {
         statusDiv.classList.add('status-occupied');
-      } else if (slot.status === 'ซ่อมบำรุง') {
+      } else if (slot.status === 2) {
         statusDiv.classList.add('status-maintenance');
       }
 
