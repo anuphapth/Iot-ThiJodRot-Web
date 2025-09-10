@@ -1,17 +1,31 @@
 let durationChart;
 let entryChart;
 
-// ฟังก์ชันแปลงเลขสถานะเป็นข้อความคำอธิบาย
+// แปลง status code เป็นข้อความ
 function statusCodeToText(code) {
-  switch (code) {
-    case 0: return 'ว่าง';
-    case 1: return 'ไม่ว่าง';
-    case 2: return 'ซ่อมบำรุง';
-    default: return 'ไม่ทราบสถานะ';
-  }
+  if (code === 0) return 'ว่าง';
+  if (code === 1) return 'ไม่ว่าง';
+  if (code === 2) return 'ซ่อมบำรุง';
+  return 'ไม่ทราบ';
 }
 
-// ฟังก์ชันวาดกราฟจำนวนชั่วโมง
+// แปลงข้อความเป็น code
+function statusTextToCode(text) {
+  if (text === 'ว่าง') return 0;
+  if (text === 'ไม่ว่าง') return 1;
+  if (text === 'ซ่อมบำรุง') return 2;
+  return -1;
+}
+
+// วนเฉพาะ "ว่าง" ↔ "ซ่อมบำรุง"
+function getNextStatus(currentStatus) {
+  if (currentStatus === 'ว่าง') return 'ซ่อมบำรุง';
+  if (currentStatus === 'ซ่อมบำรุง') return 'ว่าง';
+  if (currentStatus === 'ไม่ว่าง') return 'ซ่อมบำรุง'; // เพิ่มบรรทัดนี้
+  return 'ว่าง'; // fallback
+}
+
+// วาดกราฟจำนวนชั่วโมงที่จอดเฉลี่ย
 function drawDurationChart(data) {
   const ctx = document.getElementById('parkingDurationChart').getContext('2d');
   if (durationChart) durationChart.destroy();
@@ -40,7 +54,7 @@ function drawDurationChart(data) {
   });
 }
 
-// ฟังก์ชันวาดกราฟเวลาเข้า
+// วาดกราฟเวลาเข้าจอด
 function drawEntryTimeChart(entryTimes) {
   const ctx = document.getElementById('parkingEntryChart').getContext('2d');
   if (entryChart) entryChart.destroy();
@@ -53,7 +67,7 @@ function drawEntryTimeChart(entryTimes) {
   const datasets = Object.keys(entryTimes).map((slot, i) => {
     const counts = new Array(24).fill(0);
     entryTimes[slot].forEach(date => {
-      const hour = date.getHours();
+      const hour = new Date(date).getHours();
       counts[hour]++;
     });
 
@@ -67,32 +81,23 @@ function drawEntryTimeChart(entryTimes) {
 
   entryChart = new Chart(ctx, {
     type: 'bar',
-    data: {
-      labels,
-      datasets,
-    },
+    data: { labels, datasets },
     options: {
       responsive: true,
       scales: {
         y: {
           beginAtZero: true,
-          title: {
-            display: true,
-            text: 'จำนวนครั้งที่เข้าจอด'
-          }
+          title: { display: true, text: 'จำนวนครั้งที่เข้าจอด' }
         },
         x: {
-          title: {
-            display: true,
-            text: 'ช่วงเวลาที่เข้าจอด (ชั่วโมง)'
-          }
+          title: { display: true, text: 'ช่วงเวลาที่เข้าจอด (ชั่วโมง)' }
         }
       }
     }
   });
 }
 
-// โหลดข้อมูลจอดรถจาก server แล้ววาดกราฟ
+// โหลดข้อมูลจอดรถและแสดงกราฟ
 async function loadParkingLogsAndDrawCharts(month = '', year = '') {
   try {
     const res = await fetch(`/api/parking/logs?month=${month}&year=${year}`);
@@ -106,7 +111,7 @@ async function loadParkingLogsAndDrawCharts(month = '', year = '') {
       const { slot, time_in, time_out } = log;
       const inTime = new Date(time_in);
       const outTime = new Date(time_out);
-      const duration = (outTime - inTime) / (1000 * 60 * 60); // ชั่วโมง
+      const duration = (outTime - inTime) / (1000 * 60 * 60);
 
       if (!durations[slot]) durations[slot] = [];
       if (!entryTimes[slot]) entryTimes[slot] = [];
@@ -131,30 +136,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const ref1 = { value: 'ไม่ทราบ' };
   const ref2 = { value: 'ไม่ทราบ' };
 
-  // เปลี่ยนสถานะถัดไป (วนลูปว่าง -> ไม่ว่าง -> ซ่อมบำรุง -> ว่าง ...)
-  function getNextStatus(status) {
-    if (status === 'ว่าง') return 'ไม่ว่าง';
-    if (status === 'ไม่ว่าง') return 'ซ่อมบำรุง';
-    if (status === 'ซ่อมบำรุง') return 'ว่าง';
-    return 'ว่าง';
-  }
-
-  // แปลงสถานะคำเป็นโค้ดตัวเลข
-  function statusTextToCode(status) {
-    if (status === 'ว่าง') return 0;
-    if (status === 'ไม่ว่าง') return 1;
-    if (status === 'ซ่อมบำรุง') return 2;
-    return -1;
-  }
-
-  function updateButtonText(button, status) {
-    const next = getNextStatus(status);
+  function updateButtonText(button, currentStatus) {
+    const next = getNextStatus(currentStatus);
     button.textContent = `เปลี่ยนสถานะเป็น ${next}`;
   }
 
-  // แสดงสถานะใน UI และอัพเดตปุ่ม
-  function applyStatus(slot, statusCodeOrText, btn, statusElem, ref) {
-    let statusText = typeof statusCodeOrText === 'number' ? statusCodeToText(statusCodeOrText) : statusCodeOrText;
+  function applyStatus(slot, statusCodeOrText, button, statusElem, ref) {
+    const statusText = typeof statusCodeOrText === 'number'
+      ? statusCodeToText(statusCodeOrText)
+      : statusCodeOrText;
 
     ref.value = statusText;
     statusElem.classList.remove('status-vacant', 'status-occupied', 'status-maintenance');
@@ -164,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (statusText === 'ไม่ว่าง') statusElem.classList.add('status-occupied');
     else if (statusText === 'ซ่อมบำรุง') statusElem.classList.add('status-maintenance');
 
-    updateButtonText(btn, statusText);
+    updateButtonText(button, statusText);
   }
 
   async function loadInitialStatus() {
@@ -178,16 +168,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (slot1) applyStatus(1, slot1.status, btn1, status1, ref1);
       if (slot2) applyStatus(2, slot2.status, btn2, status2, ref2);
     } catch (err) {
-      console.error(err);
+      console.error('Error loading status:', err);
     }
   }
 
-  function setupToggle(btn, statusElem, slot, ref) {
-    btn.onclick = async () => {
-      btn.disabled = true;
+  function setupToggle(button, statusElem, slot, ref) {
+    button.onclick = async () => {
+      button.disabled = true;
       const oldStatus = ref.value;
       const newStatus = getNextStatus(oldStatus);
-      applyStatus(slot, newStatus, btn, statusElem, ref);
+
+      applyStatus(slot, newStatus, button, statusElem, ref);
 
       const payload = {
         slot,
@@ -201,12 +192,12 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify(payload)
         });
 
-        if (!res.ok) throw new Error('Failed to send data');
+        if (!res.ok) throw new Error('ส่งสถานะไม่สำเร็จ');
       } catch (err) {
         alert(err.message);
-        applyStatus(slot, oldStatus, btn, statusElem, ref);
+        applyStatus(slot, oldStatus, button, statusElem, ref); // กลับสถานะเดิม
       } finally {
-        btn.disabled = false;
+        button.disabled = false;
       }
     };
   }
@@ -221,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (slot.slot === 2) applyStatus(2, slot.status, btn2, status2, ref2);
         });
       } catch (err) {
-        console.error('SSE error', err);
+        console.error('SSE error:', err);
       }
     };
     es.onerror = () => {
@@ -233,10 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logoutBtn');
   logoutBtn.addEventListener('click', async () => {
     try {
-      await fetch('/api/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
+      await fetch('/api/logout', { method: 'POST', credentials: 'include' });
     } catch (err) {
       console.error('Logout failed:', err);
     } finally {
@@ -246,15 +234,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Init
   loadInitialStatus();
   setupToggle(btn1, status1, 1, ref1);
   setupToggle(btn2, status2, 2, ref2);
   createEventSource();
-
-  // โหลดกราฟครั้งแรก
   loadParkingLogsAndDrawCharts();
 
-  // ปีใน dropdown
   const yearSelect = document.getElementById('yearSelect');
   const thisYear = new Date().getFullYear();
   for (let y = thisYear; y >= thisYear - 5; y--) {
@@ -264,7 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
     yearSelect.appendChild(opt);
   }
 
-  // กดปุ่ม "โหลดข้อมูล"
   document.getElementById('loadChartBtn').addEventListener('click', () => {
     const month = document.getElementById('monthSelect').value;
     const year = document.getElementById('yearSelect').value;
