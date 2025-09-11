@@ -58,8 +58,6 @@ export const parking = async (req, res) => {
             await notifyClients();
             return res.status(200).json({ message: `Get car out on slot ${slotNum}` });
         }
-
-        // should never reach here
         return res.status(400).json({ message: "Invalid status value" });
 
     } catch (error) {
