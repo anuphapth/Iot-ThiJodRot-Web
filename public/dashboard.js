@@ -1,7 +1,6 @@
 let durationChart;
 let entryChart;
 
-// แปลง status code เป็นข้อความ
 function statusCodeToText(code) {
   if (code === 0) return 'ว่าง';
   if (code === 1) return 'ไม่ว่าง';
@@ -9,7 +8,6 @@ function statusCodeToText(code) {
   return 'ไม่ทราบ';
 }
 
-// แปลงข้อความเป็น code
 function statusTextToCode(text) {
   if (text === 'ว่าง') return 0;
   if (text === 'ไม่ว่าง') return 1;
@@ -17,12 +15,12 @@ function statusTextToCode(text) {
   return -1;
 }
 
-// วนเฉพาะ "ว่าง" ↔ "ซ่อมบำรุง"
+
 function getNextStatus(currentStatus) {
   if (currentStatus === 'ว่าง') return 'ซ่อมบำรุง';
   if (currentStatus === 'ซ่อมบำรุง') return 'ว่าง';
-  if (currentStatus === 'ไม่ว่าง') return 'ซ่อมบำรุง'; // เพิ่มบรรทัดนี้
-  return 'ว่าง'; // fallback
+  if (currentStatus === 'ไม่ว่าง') return 'ซ่อมบำรุง';
+  return 'ว่าง';
 }
 
 // วาดกราฟจำนวนชั่วโมงที่จอดเฉลี่ย
@@ -39,7 +37,7 @@ function drawDurationChart(data) {
         data: Object.values(data).map(arr =>
           arr.length ? (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(2) : 0
         ),
-        backgroundColor: '#4CAF50'
+        backgroundColor: '#00fe48ff'
       }]
     },
     options: {
@@ -97,7 +95,6 @@ function drawEntryTimeChart(entryTimes) {
   });
 }
 
-// โหลดข้อมูลจอดรถและแสดงกราฟ
 async function loadParkingLogsAndDrawCharts(month = '', year = '') {
   try {
     const res = await fetch(`/api/parking/logs?month=${month}&year=${year}`);
