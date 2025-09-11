@@ -28,20 +28,33 @@ function drawDurationChart(data) {
   const ctx = document.getElementById('parkingDurationChart').getContext('2d');
   if (durationChart) durationChart.destroy();
 
+  const slotNames = Object.keys(data); // เช่น ['1', '2']
+  const avgDurations = slotNames.map(slot => {
+    const arr = data[slot];
+    return arr.length ? (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(2) : 0;
+  });
+
+  // หากต้องการให้เป็น grouped bar chart พร้อมสีต่างกัน
+  const datasets = slotNames.map((slot, i) => {
+    const colorPalette = ['#4CAF50', '#2196F3', '#fe0048', '#fea500', '#800080'];
+    return {
+      label: `ช่องA${slot}`,
+      data: [avgDurations[i]], // ต้องทำให้ data เป็น array (แม้มีค่าเดียว) เพื่อให้ grouped ได้
+      backgroundColor: colorPalette[i % colorPalette.length]
+    };
+  });
+
   durationChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: Object.keys(data),
-      datasets: [{
-        label: 'ชั่วโมงที่จอดเฉลี่ย',
-        data: Object.values(data).map(arr =>
-          arr.length ? (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(2) : 0
-        ),
-        backgroundColor: '#00fe48ff'
-      }]
+      labels: ['เฉลี่ยต่อช่องจอด'], // จะทำให้ grouped bar อยู่ใน group เดียว
+      datasets: datasets
     },
     options: {
       responsive: true,
+      plugins: {
+        legend: { position: 'top' }
+      },
       scales: {
         y: {
           beginAtZero: true,
@@ -51,6 +64,7 @@ function drawDurationChart(data) {
     }
   });
 }
+
 
 // วาดกราฟเวลาเข้าจอด
 function drawEntryTimeChart(entryTimes) {
@@ -71,7 +85,7 @@ function drawEntryTimeChart(entryTimes) {
 
     const colors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0'];
     return {
-      label: `Slot ${slot}`,
+      label: `ช่องA${slot}`,
       data: counts,
       backgroundColor: colors[i % colors.length],
     };

@@ -121,17 +121,14 @@ td {
 /* Status colors by English class names */
 .status-vacant {
   background-color: #4CAF50;
-  /* Green */
 }
 
 .status-occupied {
   background-color: #F44336;
-  /* Red */
 }
 
 .status-maintenance {
-  background-color: #3300ff;
-  /* Blue */
+  background-color: #FFFF00;
 }
 
 /* Zone label style */

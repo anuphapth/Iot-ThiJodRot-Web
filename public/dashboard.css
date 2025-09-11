@@ -98,7 +98,7 @@ main.dashboard .right-panel {
 }
 
 .status-maintenance {
-  background-color: #3300ff;
+  background-color: #FFFF00;
   color: white;
   padding: 1px 12px;
   border-radius: 20px;
@@ -187,4 +187,29 @@ main.dashboard .right-panel {
 
 h2 {
   text-align: center;
+}
+
+#loadChartBtn {
+  background-color: #ffaf81;
+  color: #333;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-family: "Kanit", sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+#loadChartBtn:hover:not(:disabled) {
+  background-color: #e29d5d;
+}
+
+main.dashboard .left-panel h2 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 2rem;
 }
