@@ -11,20 +11,30 @@ export const subscribeParkingStatus = (req, res) => {
     });
     res.flushHeaders();
 
+    res.write(`event: connected\ndata: "SSE connected"\n\n`);
+
     clients.push(res);
 
+    // Clean up when client closes connection
     req.on('close', () => {
         clients = clients.filter(client => client !== res);
     });
 };
 
+// ======= Optimized Notifier =======
 export const notifyClients = async () => {
     try {
         const { rows } = await db.query(constants.getStatus);
         const data = JSON.stringify(rows);
 
-        clients.forEach(client => client.write(`data: ${data}\n\n`));
+        clients = clients.filter(client => {
+            try {
+                client.write(`data: ${data}\n\n`);
+                return true;
+            } catch (err) {
+                return false;
+            }
+        });
     } catch (error) {
-        return res.status(500).json({ err: "Internal Server Error" });
     }
 };

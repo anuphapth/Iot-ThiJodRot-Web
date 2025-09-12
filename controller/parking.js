@@ -24,7 +24,7 @@ export const parking = async (req, res) => {
         }
 
         // check current status
-        const { rows: existing } = await db.query(constants.checkExit, [slotNum]);
+        const { rows: existing } = await db.query(constants.getStatusCar, [slotNum]);
         const currentStatus = existing[0]?.status;
 
         if (currentStatus === undefined) {
