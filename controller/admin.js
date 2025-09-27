@@ -56,51 +56,31 @@ export const parkingData = async (req, res) => {
   if (type === 'year') {
     startDate = `${year}-01-01`;
     endDate = `${parseInt(year) + 1}-01-01`;
-    labelFormat = 'YYYY-MM'; // รายเดือน
+    labelFormat = 'YYYY-MM';
   } else if (type === 'month') {
     const yearInt = parseInt(year);
     const monthInt = parseInt(month);
-
-    const startDateObj = new Date(yearInt, monthInt - 1, 1); // วันที่ 1 ของเดือน
-    const endDateObj = new Date(yearInt, monthInt, 1);       // วันที่ 1 ของเดือนถัดไป
-
+    const startDateObj = new Date(yearInt, monthInt - 1, 1);
+    const endDateObj = new Date(yearInt, monthInt, 1);
     startDate = startDateObj.toISOString().split('T')[0];
     endDate = endDateObj.toISOString().split('T')[0];
-    labelFormat = 'YYYY-MM-DD'; // รายวัน
+    labelFormat = 'YYYY-MM-DD';
   } else {
     return res.status(400).json({ error: 'Invalid type' });
   }
 
-  const query = `
-    SELECT
-      to_char(ts, $1) AS label,
-      COUNT(*) AS total_cars
-    FROM (
-      SELECT generate_series(time_in, COALESCE(time_out, NOW()), interval '1 hour') AS ts
-      FROM parking_logs
-      WHERE time_in >= $2 AND time_in < $3
-    ) AS series
-    GROUP BY label
-    ORDER BY label;
-  `;
-
   try {
-    const result = await db.query(query, [labelFormat, startDate, endDate]);
+    const result = await db.query(constants.getdate, [labelFormat, startDate, endDate]);
     res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Database error' });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 export const chart = async (req, res) => {
   const { month, year } = req.query;
 
-  let query = `
-    SELECT slot, time_in, time_out
-    FROM parking_logs
-    WHERE time_in IS NOT NULL AND time_out IS NOT NULL
-  `;
+  let query = constants.getchart;
   const params = [];
 
   if (year) {
@@ -118,8 +98,27 @@ export const chart = async (req, res) => {
   try {
     const result = await db.query(query, params);
     res.json(result.rows);
-  } catch (err) {
-    console.error('Error in /api/parking/logs:', err);
-    res.status(500).json({ error: 'Database error' });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
+
+export const getpower = async (req, res) => {
+  try {
+    // Validate
+    const { power } = req.body;
+    if (power === undefined) {
+      return res.status(400).json({ error: "Missing 'power' in request body" });
+    }
+
+    const numpower = Number(power);
+    if (isNaN(numpower)) {
+      return res.status(400).json({ error: "'power' must be a number" });
+    }
+    await db.query(constants.getpower, [numpower, new Date()]);
+    return res.status(200).json({ message: "Power inserted successfully" });
+
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
