@@ -122,3 +122,17 @@ export const getpower = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const getupPower = async (req, res) => {
+    try {
+        const avgResult = await db.query(constants.getAvgPower);
+        const latestResult = await db.query(constants.getLastPower);
+
+        const averageUse = parseFloat(avgResult.rows[0].average * 5);
+        const latestUse = latestResult.rows[0].use * 5;
+
+        return res.status(200).json({ averageUse, latestUse });
+    } catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
