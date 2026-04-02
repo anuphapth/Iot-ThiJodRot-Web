@@ -27,6 +27,14 @@ export const SQL_QUERIES = {
   GET_POWER_BY_DATE_RANGE: "SELECT * FROM power WHERE created_at >= $1 AND created_at < $2 ORDER BY created_at ASC",
   GET_POWER_STATS: "SELECT COUNT(*) as total_readings, AVG(use) as average_power, MIN(use) as min_power, MAX(use) as max_power FROM power WHERE created_at >= $1 AND created_at < $2",
   DELETE_OLD_POWER: "DELETE FROM power WHERE created_at < $1 RETURNING *",
+
+  // health check
+  CHECK_CONNECTION: "SELECT 1 as status",
+  GET_DB_VERSION: "SELECT version() as version",
+  GET_CURRENT_DB: "SELECT current_database() as database",
+  GET_CURRENT_USER: "SELECT current_user as user",
+  COUNT_TABLES: "SELECT count(*) as total_tables FROM information_schema.tables WHERE table_schema = 'public'",
+  CHECK_TABLE_EXISTS: "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $1) as exists",
 };
 
 export const PARKING_STATUS = {

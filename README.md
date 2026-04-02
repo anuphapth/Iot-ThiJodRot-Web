@@ -107,6 +107,10 @@ http://localhost:3000/api
 - `POST /api/login` - User authentication
 - `POST /api/admin/controll` - Admin slot control
 - `GET /api/events` - Real-time status updates (SSE)
+- `GET /api/health` - Basic health check
+- `GET /api/health/full` - Comprehensive health check
+- `GET /api/health/database` - Database status
+- `GET /api/health/server` - Server status
 
 See [API Documentation](docs/api/endpoints.md) for complete API reference.
 
