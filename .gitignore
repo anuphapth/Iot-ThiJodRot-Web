@@ -1,23 +1,60 @@
-# โฟลเดอร์ node_modules (จำเป็นต้อง ignore เพราะไฟล์เยอะมาก)
+# Dependencies
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# ไฟล์ environment variables เก็บข้อมูลลับ
+# Environment variables
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# ไฟล์ log ต่างๆ
+# Logs
+logs/
 *.log
+npm-debug.log*
 
-# โฟลเดอร์ build หรือ dist (ถ้ามี)
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+.nyc_output/
+
+# Build outputs
 dist/
 build/
 
-# โฟลเดอร์ของ editor ที่มักจะสร้างไว้
-.vscode/
-.idea/
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# ไฟล์ระบบของ macOS
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
 .DS_Store
 
-.gitgnore
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
 
-Iot_ThiJodRod
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Uploads
+uploads/
+
+# Test files
+.jest/

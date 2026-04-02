@@ -1,0 +1,131 @@
+/* Body styles: set font, size, background, and text color */
+body {
+    font-family: "Kanit", sans-serif;
+    font-size: 24px;
+    background-color: #f4f6f8;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Navbar styles: background color, padding, shadow, sticky position, flex layout */
+#navbar {
+    background-color: #FFB67A;
+    padding: 10px 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    padding: 10px 16px;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Container inside navbar to limit max width and center content */
+#navbar-container {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Navbar brand text styling */
+#navbar-brand {
+    font-family: "Epunda Slab", serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #333;
+}
+
+/* Logo styles: larger font and bold */
+#navbar .logo {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+/* Logo link: remove underline and keep color */
+#navbar .logo a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* Login button styles: background, color, padding, border-radius, font */
+#navbar button#toLoginBtn {
+    background-color: #ffd272;
+    color: #000000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    font-family: "Epunda Slab", serif;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+/* Login button hover effect */
+#navbar button#toLoginBtn:hover {
+    background-color: #feb82b;
+}
+
+/* Logout button styles: same as login button */
+#navbar button#logoutBtn {
+    background-color: #ffd272;
+    color: #000000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    font-family: "Epunda Slab", serif;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+/* Logout button hover effect */
+#navbar button#logoutBtn:hover {
+    background-color: #feb82b;
+}
+
+@media (max-width: 480px) {
+  #navbar {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+  }
+
+  #navbar .logo {
+    font-size: 1.3rem;
+  }
+
+  #navbar button {
+    font-size: 1rem;
+    padding: 6px 10px;
+  }
+}
+
+html, body {
+  padding: env(safe-area-inset-top, 0)
+           env(safe-area-inset-right, 0)
+           env(safe-area-inset-bottom, 0)
+           env(safe-area-inset-left, 0);
+}
+
+#navbar {
+  padding-top: calc(env(safe-area-inset-top, 0) + 10px);
+  padding-left: calc(env(safe-area-inset-left, 0) + 16px);
+  padding-right: calc(env(safe-area-inset-right, 0) + 16px);
+}
+
+@supports(padding: env(safe-area-inset-top)) {
+  html, body {
+    padding: env(safe-area-inset-top)
+             env(safe-area-inset-right)
+             env(safe-area-inset-bottom)
+             env(safe-area-inset-left);
+  }
+}
